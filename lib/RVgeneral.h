@@ -18,11 +18,13 @@ typedef struct gpio{
 } gpio;
 
 typedef struct interruption_context{
-
+    
 } irq_context;
 
 
 void init_interfaces();
+void init_display(ssd1306_t*);
+void debug_display(ssd1306_t*, bool);
 int init_gpio(gpio*, int);
 void debug_gpio(gpio*, int);
 void print_gpio(gpio);

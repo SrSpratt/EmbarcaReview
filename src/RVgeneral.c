@@ -12,6 +12,22 @@ void init_interfaces(){
 
 }
 
+void init_display(ssd1306_t* ssd){
+    ssd1306_init(ssd, WIDTH, HEIGHT, false, ADDRESS, I2C_PORT);
+    ssd1306_config(ssd);
+    ssd1306_send_data(ssd);
+
+    ssd1306_fill(ssd, false);
+    ssd1306_send_data(ssd);
+}
+
+void debug_display(ssd1306_t* ssd, bool color){
+    ssd1306_fill(ssd, !color);
+    ssd1306_rect(ssd, 3, 3, 120, 60, color, !color);
+    ssd1306_draw_string(ssd, "DEBUG!", (128/2) - ((6*8)/2), 64/2);
+    ssd1306_send_data(ssd);
+}
+
 int init_gpio(gpio* pins, int vector_size){
     for (int i = 0; i < vector_size; i++){
         gpio_init(pins[i].pin);

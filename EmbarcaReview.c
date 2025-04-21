@@ -13,12 +13,17 @@ int main(){
 
     gpio pins[6] = {button_a, button_b, button_j, led_r, led_g, led_b};
 
+    ssd1306_t ssd;
+    bool color = true;
+
     init_interfaces();
     init_gpio(pins, 6);
+    init_display(&ssd);
+    debug_display(&ssd, color);
 
     while(true){
-        printf("Olá!");
-        debug_gpio(pins, 6);
-        sleep_ms(1000);
+        //printf("Olá!");
+        //debug_gpio(pins, 6);
+        //sleep_ms(1000);
     }
 }
