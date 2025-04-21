@@ -5,6 +5,9 @@
 #include "hardware/i2c.h"
 #include "hardware/adc.h"
 #include "hardware/pwm.h"
+#include "hardware/clocks.h"
+#include "hardware/pio.h"
+#include "RVpio.pio.h"
 #include <ssd1306.h>
 #include <stdio.h>
 
@@ -32,6 +35,19 @@ typedef struct pwm_pinout{
     uint8_t slice;
 } pwm;
 
+typedef struct pio_refs{
+    PIO address;
+    int state_machine;
+    int offset;
+    int pin;
+} pio;
+
+typedef struct rgb{
+    double red;
+    double green;
+    double blue;
+} rgb;
+
 typedef struct interruption_context{
     
 } irq_context;
@@ -52,5 +68,8 @@ void debug_adc(adc*, uint8_t);
 void config_pwm(pwm*, uint8_t);
 void debug_pwm(pwm*, uint8_t);
 void print_pwm(pwm);
+
+void config_pio(pio*);
+void debug_pio(pio);
 
 #endif

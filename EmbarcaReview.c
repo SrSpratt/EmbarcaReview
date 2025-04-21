@@ -25,6 +25,13 @@ int main(){
 
     pwm p_pins[2] = {buzzer_a, buzzer_b};
 
+    pio pio = {
+        .pin = 7,
+        .address = 0,
+        .offset = 0,
+        .state_machine = 0
+    };
+
     bool color = true;
 
     init_interfaces();
@@ -35,6 +42,8 @@ int main(){
 
     config_pwm(p_pins, 2);
 
+    config_pio(&pio);
+
     debug_display(&ssd, color);
 
     while(true){
@@ -42,6 +51,7 @@ int main(){
         //debug_gpio(pins, 6);
         //debug_adc(a_pins, 2);
         debug_pwm(p_pins, 2);
+        debug_pio(pio);
         sleep_ms(1000);
     }
 }

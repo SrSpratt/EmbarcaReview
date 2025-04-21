@@ -100,3 +100,21 @@ void print_pwm(pwm pin){
     printf("\nPWM");
     printf("\nContador do pino %d: %d", pin.pin, pwm_get_counter(pin.slice));
 }
+
+void config_pio(pio* pio){
+    pio->address = pio0;
+    if (!set_sys_clock_khz(128000, false))
+        printf("clock errado!");
+    pio->offset = pio_add_program(pio->address, &pio_review_program);
+    pio->state_machine = pio_claim_unused_sm(pio->address, true);
+
+    pio_review_program_init(pio->address, pio->state_machine, pio->offset, pio->pin);
+}
+
+void debug_pio(pio pio){
+    printf("\nPIO");
+    printf("\nPino: %d", pio.pin);
+    printf("\nEndereço: %d", pio.address);
+    printf("\nDeslocamento: %d", pio.offset);
+    printf("\nMáquina de estados: %d", pio.state_machine);
+}
