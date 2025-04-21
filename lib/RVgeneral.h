@@ -4,6 +4,7 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "hardware/adc.h"
+#include "hardware/pwm.h"
 #include <ssd1306.h>
 #include <stdio.h>
 
@@ -12,16 +13,24 @@
 #define I2C_SCL 15
 #define ADDRESS 0x3C
 
+#define PWM_WRAP 20000
+#define PWM_CLKDIV 125.0f
 
-typedef struct gpio{
+
+typedef struct gpio_pinout{
     uint8_t pin;
     bool pin_dir;
 } gpio;
 
 typedef struct adc_pinout{
     uint8_t pin;
-    int channel;
+    uint8_t channel;
 } adc;
+
+typedef struct pwm_pinout{
+    uint8_t pin;
+    uint8_t slice;
+} pwm;
 
 typedef struct interruption_context{
     
@@ -37,7 +46,11 @@ void debug_gpio(gpio*, uint8_t);
 void print_gpio(gpio);
 
 void config_adc(adc*, uint8_t);
-void read_adc(uint16_t* readings, adc* pins, uint8_t vector_size);
-void debug_adc(adc* pins, uint8_t vector_size);
+void read_adc(uint16_t*, adc*, uint8_t);
+void debug_adc(adc*, uint8_t);
+
+void config_pwm(pwm*, uint8_t);
+void debug_pwm(pwm*, uint8_t);
+void print_pwm(pwm);
 
 #endif

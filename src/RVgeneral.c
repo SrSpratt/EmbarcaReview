@@ -76,3 +76,27 @@ void print_gpio(gpio pin){
     printf("\nDireção do pino %d: %s", pin.pin, gpio_get_dir(pin.pin) == 0 ? "IN" : "OUT");
     printf("\nNível: %s", gpio_get(pin.pin) == 0 ? "0V" : "3,3V");
 }
+
+void config_pwm(pwm* pins, uint8_t vector_size){
+    for(uint8_t i = 0; i < vector_size; i++){
+        gpio_set_function(pins[i].pin, GPIO_FUNC_PWM);
+        pins[i].slice = pwm_gpio_to_slice_num(pins[i].pin);
+
+        if (i > 0 && pins[i].slice == pins[i-1].slice)
+            continue;
+
+        pwm_set_wrap(pins[i].slice, PWM_WRAP);
+        pwm_set_clkdiv(pins[i].slice, PWM_CLKDIV);
+        pwm_set_enabled(pins[i].slice, true);
+    }
+}
+
+void debug_pwm(pwm* pins, uint8_t vector_size){
+    for(uint8_t i = 0; i < vector_size; i++)
+        print_pwm(pins[i]);
+}
+
+void print_pwm(pwm pin){
+    printf("\nPWM");
+    printf("\nContador do pino %d: %d", pin.pin, pwm_get_counter(pin.slice));
+}

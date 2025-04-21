@@ -19,6 +19,12 @@ int main(){
     adc joystick_y = {.pin = 27, .channel = 1};
 
     adc a_pins[2] = {joystick_x, joystick_y};
+
+    pwm buzzer_a = {.pin = 21, .slice = 0};
+    pwm buzzer_b = {.pin = 10, .slice = 0};
+
+    pwm p_pins[2] = {buzzer_a, buzzer_b};
+
     bool color = true;
 
     init_interfaces();
@@ -27,13 +33,15 @@ int main(){
 
     config_adc(a_pins, 2);
 
+    config_pwm(p_pins, 2);
 
     debug_display(&ssd, color);
 
     while(true){
         //printf("Olá!");
         //debug_gpio(pins, 6);
-        debug_adc(a_pins, 2);
+        //debug_adc(a_pins, 2);
+        debug_pwm(p_pins, 2);
         sleep_ms(1000);
     }
 }
