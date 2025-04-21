@@ -1,5 +1,5 @@
-#ifndef RVGPIO_H
-#define RVGPIO_H
+#ifndef RVGENERAL_H
+#define RVGENERAL_H
 
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
@@ -41,12 +41,6 @@ typedef struct pio_refs{
     int offset;
     int pin;
 } pio;
-
-typedef struct rgb{
-    double red;
-    double green;
-    double blue;
-} rgb;
 
 typedef struct interruption_context{
     

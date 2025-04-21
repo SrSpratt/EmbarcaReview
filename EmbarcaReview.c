@@ -1,4 +1,5 @@
 #include <RVgeneral.h>
+#include <RVsketches.h>
 
 
 int main(){
@@ -32,6 +33,22 @@ int main(){
         .state_machine = 0
     };
 
+    rgb main_color = {.red = 0.0, .green = 0.05, .blue = 0.0};
+    rgb background_color = {.red = 0.05, .green = 0.05, .blue = 0.05};
+
+    sketch sketch = {
+        .figure = {
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0
+        },
+        .index = -1,
+        .main_color = main_color ,
+        .background_color = background_color
+    };
+
     bool color = true;
 
     init_interfaces();
@@ -43,6 +60,9 @@ int main(){
     config_pwm(p_pins, 2);
 
     config_pio(&pio);
+
+    vector_copy(sketch.figure, sketch_array('o'), matrix);
+    draw(sketch, 0, pio, matrix);
 
     debug_display(&ssd, color);
 
