@@ -114,3 +114,41 @@ void vector_copy(double* first_vec, double* second_vec, const uint8_t vector_siz
         first_vec[i] = second_vec[i];
     }
 }
+
+void map_to_display(float* values, uint8_t vector_size){
+    float normalizations[2];
+
+    normalizations[0] = (values[0])/(4095.0f);
+    normalizations[1] = (values[1])/(4095.0f);
+
+    values[0] = (uint16_t) (normalizations[0] * 56.0f);
+    values[1] = (uint16_t) (normalizations[1] * 120.0f);
+}
+
+void trace_dot(ssd1306_t* ssd, adc* a_pins, uint8_t size, bool color){
+    uint16_t previous_values[2];
+    uint16_t values[2];
+
+    read_adc(values, a_pins, 2);
+    printf("value Y: %d", values[0]);
+    printf("value X: %d", values[1]);
+
+    if (values[0] != previous_values[0] || values[1] != previous_values[1]){
+
+        previous_values[0] = values[0];
+        previous_values[1] = values[1];
+
+        float mappings[2];
+        mappings[0] = values[0];
+        mappings[1] = values[1];
+
+        map_to_display(mappings, 2);
+
+        ssd1306_fill(ssd, !color);
+        ssd1306_rect(ssd, 0, 0, 127, 63, color, !color);
+
+        ssd1306_rect(ssd, 56 - mappings[0], mappings[1], 8, 8, color, color);
+        ssd1306_send_data(ssd);
+
+    }
+}

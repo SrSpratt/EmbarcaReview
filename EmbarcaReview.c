@@ -62,7 +62,7 @@ int main(){
     config_pio(&pio);
 
     vector_copy(sketch.figure, sketch_array('o'), matrix);
-    draw(sketch, 0, pio, matrix);
+    //draw(sketch, 0, pio, matrix);
 
     debug_display(&ssd, color);
 
@@ -70,8 +70,8 @@ int main(){
         //printf("Olá!");
         //debug_gpio(pins, 6);
         //debug_adc(a_pins, 2);
-        debug_pwm(p_pins, 2);
-        debug_pio(pio);
-        sleep_ms(1000);
+        //debug_pwm(p_pins, 2);
+        //debug_pio(pio);
+        trace_dot(&ssd, a_pins, 2, color);
     }
 }
