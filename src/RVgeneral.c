@@ -9,7 +9,6 @@ void init_interfaces(){
     gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
-
 }
 
 void init_display(ssd1306_t* ssd){
@@ -26,10 +25,34 @@ void debug_display(ssd1306_t* ssd, bool color){
     ssd1306_rect(ssd, 3, 3, 120, 60, color, !color);
     ssd1306_draw_string(ssd, "DEBUG!", (128/2) - ((6*8)/2), 64/2);
     ssd1306_send_data(ssd);
+    printf("\nDepuração de um retângulo de 120x60 no display de %dx%d!\n", WIDTH, HEIGHT);
 }
 
-int init_gpio(gpio* pins, int vector_size){
-    for (int i = 0; i < vector_size; i++){
+void config_adc(adc* pins, uint8_t vector_size){
+    adc_init();
+    for (uint8_t i =0; i < vector_size; i++)
+        adc_gpio_init(pins[i].pin);
+}
+
+void read_adc(uint16_t* readings, adc* pins, uint8_t vector_size){
+    for (uint8_t i = 0; i < vector_size; i++){
+        adc_select_input(pins[i].channel);
+        readings[i] = adc_read();
+    }
+}
+
+void debug_adc(adc* pins, uint8_t vector_size){
+    printf("\nADC\n");
+    printf("\nReadings:\n");
+    uint16_t readings[vector_size];
+    read_adc(readings, pins, vector_size);
+    for (uint8_t i = 0; i < vector_size; i++){
+        printf("Pin %d, channel %d: %d\n", pins[i].pin, pins[i].channel, readings[i]);
+    }
+}
+
+int init_gpio(gpio* pins, uint8_t vector_size){
+    for (uint8_t i = 0; i < vector_size; i++){
         gpio_init(pins[i].pin);
         gpio_set_dir(pins[i].pin, pins[i].pin_dir);
         if (pins[i].pin_dir == 0)
@@ -41,9 +64,9 @@ int init_gpio(gpio* pins, int vector_size){
     return 0;
 }
 
-void debug_gpio(gpio* pins, int vector_size){
+void debug_gpio(gpio* pins, uint8_t vector_size){
     printf("Entrou aqui!");
-    for (int i = 0; i < vector_size; i++){
+    for (uint8_t i = 0; i < vector_size; i++){
         print_gpio(pins[i]);
     }
 }
