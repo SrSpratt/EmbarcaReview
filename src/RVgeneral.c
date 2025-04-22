@@ -1,6 +1,18 @@
 #include <RVgeneral.h>
 #include <stdio.h>
 
+
+irq_context context = {
+    .pin = 0,
+    .previous_pin = 0,
+    .presses = 1,
+    .double_border = false,
+    .play = false
+};
+volatile uint32_t interval_a = 0;
+volatile uint32_t interval_b = 0;
+volatile uint32_t interval_j = 0;
+
 void init_interfaces(){
     stdio_init_all();
 
@@ -58,7 +70,7 @@ int init_gpio(gpio* pins, uint8_t vector_size){
         if (pins[i].pin_dir == 0)
             gpio_pull_up(pins[i].pin);
         else
-            gpio_put(pins[i].pin, 1);
+            gpio_put(pins[i].pin, 0);
     }
 
     return 0;
@@ -117,4 +129,53 @@ void debug_pio(pio pio){
     printf("\nEndereço: %d", pio.address);
     printf("\nDeslocamento: %d", pio.offset);
     printf("\nMáquina de estados: %d", pio.state_machine);
+}
+
+void set_interrupts(gpio* pins, uint8_t vector_size){
+    gpio_set_irq_enabled_with_callback(pins[0].pin,GPIO_IRQ_EDGE_RISE, true, &interrupt_callback);
+    for (uint8_t i = 1; i < vector_size; i++)
+        gpio_set_irq_enabled(pins[i].pin, GPIO_IRQ_EDGE_RISE, true);
+}
+
+void interrupt_callback(uint gpio, uint32_t events){
+    context.pin = gpio;
+    uint32_t interval = 0;
+    if (gpio == 5)
+        interval = interval_a;
+    else if (gpio == 6)
+        interval = interval_b;
+    else
+        interval = interval_j;
+
+    uint32_t current_time = to_us_since_boot(get_absolute_time());
+    if (current_time - interval > 1000000){
+
+        if (context.previous_pin == context.pin)
+            context.presses++;
+        else
+            context.presses = 1;
+
+        printf("\ngpio:%d\ntimes:%d\n", gpio, context.presses);
+        
+        if (context.presses % 2 == 0 && gpio != 22){
+            pwm_set_gpio_level(10, 0);
+            pwm_set_gpio_level(21, 0);
+            context.play = true;
+        } else if (gpio == 5){
+            pwm_set_gpio_level(21, 0);
+            pwm_set_gpio_level(10, 0);
+            context.play = true;
+        } else if (gpio == 6) {
+            pwm_set_gpio_level(10, 0);
+            pwm_set_gpio_level(21, 0);
+            context.play = true;
+        } else if (gpio = 22){
+            pwm_set_gpio_level(10, 0);
+            pwm_set_gpio_level(21, 0);
+            context.double_border = !context.double_border;
+            context.play = true;
+        }
+
+        context.previous_pin = context.pin;
+    }
 }

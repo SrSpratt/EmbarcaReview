@@ -24,7 +24,7 @@ void draw(sketch, uint32_t, pio, const uint8_t);
 void vector_copy(double*, double*, uint8_t);
 void print_sketch(sketch);
 
-void map_to_display(float* values, uint8_t vector_size);
-void trace_dot(ssd1306_t* ssd, adc* a_pins, uint8_t size, bool color);
+void map_to_display(float*, uint8_t);
+void trace_dot(ssd1306_t*, adc*, uint8_t, bool, sketch, pio);
 
 #endif

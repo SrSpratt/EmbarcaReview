@@ -1,7 +1,6 @@
 #include <RVgeneral.h>
 #include <RVsketches.h>
 
-
 int main(){
 
     gpio button_a = {.pin = 5, .pin_dir = 0 };
@@ -33,8 +32,8 @@ int main(){
         .state_machine = 0
     };
 
-    rgb main_color = {.red = 0.0, .green = 0.05, .blue = 0.0};
-    rgb background_color = {.red = 0.05, .green = 0.05, .blue = 0.05};
+    rgb main_color = {.red = 0.0, .green = 0.03, .blue = 0.0};
+    rgb background_color = {.red = 0.01, .green = 0.01, .blue = 0.01};
 
     sketch sketch = {
         .figure = {
@@ -61,10 +60,11 @@ int main(){
 
     config_pio(&pio);
 
-    vector_copy(sketch.figure, sketch_array('o'), matrix);
     //draw(sketch, 0, pio, matrix);
 
-    debug_display(&ssd, color);
+    //debug_display(&ssd, color);
+
+    set_interrupts(g_pins, 3);
 
     while(true){
         //printf("Olá!");
@@ -72,6 +72,27 @@ int main(){
         //debug_adc(a_pins, 2);
         //debug_pwm(p_pins, 2);
         //debug_pio(pio);
-        trace_dot(&ssd, a_pins, 2, color);
+        if (context.play)
+            trace_dot(&ssd, a_pins, 2, color, sketch, pio);
+        else {
+            rgb main_color = {
+                .green = 0.00,
+                .blue = 0.01,
+                .red = 0.00
+            };
+            rgb background_color = {
+                .green = 0.01,
+                .blue = 0.01,
+                .red = 0.00
+            };
+            sketch.main_color = main_color;
+            sketch.background_color = background_color;
+            vector_copy(sketch.figure, sketch_array('d'), matrix);
+            draw(sketch, 0, pio, matrix);
+            ssd1306_fill(&ssd, !color);
+            ssd1306_rect(&ssd, 0, 0, 127, 63, color, !color);
+            ssd1306_draw_string(&ssd, "JOGAR?", (128/2) - ((6*8)/2), 64/2);
+            ssd1306_send_data(&ssd);
+        }
     }
 }

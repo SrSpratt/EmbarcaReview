@@ -43,9 +43,14 @@ typedef struct pio_refs{
 } pio;
 
 typedef struct interruption_context{
-    
+    uint8_t pin;
+    uint8_t previous_pin;
+    uint8_t presses;
+    bool double_border;
+    bool play;
 } irq_context;
 
+extern irq_context context;
 
 void init_interfaces();
 void init_display(ssd1306_t*);
@@ -65,5 +70,8 @@ void print_pwm(pwm);
 
 void config_pio(pio*);
 void debug_pio(pio);
+
+void set_interrupts(gpio*, uint8_t);
+void interrupt_callback(uint, uint32_t);
 
 #endif
