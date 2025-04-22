@@ -75,10 +75,13 @@ void trace_dot(ssd1306_t* ssd, adc* a_pins, uint8_t size, bool color, sketch ske
     uint16_t previous_values[2];
     uint16_t values[2];
 
+    //efetua as leituras no vetor values
     read_adc(values, a_pins, 2);
     //printf("value Y: %d", values[0]);
     //printf("value X: %d", values[1]);
 
+
+    // se a posição mudou
     if (values[0] != previous_values[0] || values[1] != previous_values[1]){
 
         previous_values[0] = values[0];
@@ -88,11 +91,14 @@ void trace_dot(ssd1306_t* ssd, adc* a_pins, uint8_t size, bool color, sketch ske
         mappings[0] = values[0];
         mappings[1] = values[1];
 
+        //normaliza as posições
         map_to_display(mappings, 2);
 
+        //desenha a "arena"
         ssd1306_fill(ssd, !color);
         ssd1306_rect(ssd, 0, 0, 127, 63, color, !color);
 
+        //posiciona x e y dentro da lógica do display
         uint8_t char_x = 56 - mappings[0];
         uint8_t char_y = mappings[1];
 
@@ -103,7 +109,7 @@ void trace_dot(ssd1306_t* ssd, adc* a_pins, uint8_t size, bool color, sketch ske
         int pos_y = -1;
 
         
-
+        //verifica se o retângulo colidiu com as paredes e executa a lógica: jogo ou derrota?
         if (char_x > 3 && char_x < 56 && char_y > 0 && char_y < 119){
             rgb main_color = {
                 .green = 0.01,
