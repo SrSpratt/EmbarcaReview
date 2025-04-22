@@ -7,7 +7,7 @@
 Como projeto de revisão, para reaver contato com os conceitos de gpio, pio, interrupções, trepidação, pwm e conversão analógico-digital, foi implementado um pequeno cenário em que um personagem pode se mover, mas não pode encostar nas paredes do display (sendo os buzzers e LEDs vermelhos ligados quando ele faz isso).
 
 #### Vídeo de funcionamento
-
+    https://www.youtube.com/watch?v=IpYDBhd1kQ4
 
 
 #### Instruções de compilação
