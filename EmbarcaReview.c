@@ -72,9 +72,11 @@ int main(){
         //debug_adc(a_pins, 2);
         //debug_pwm(p_pins, 2);
         //debug_pio(pio);
-        if (context.play)
+        if (context.play) {
             trace_dot(&ssd, a_pins, 2, color, sketch, pio);
-        else {
+            pwm_set_gpio_level(10, 0);
+            pwm_set_gpio_level(21, 0);
+        } else {
             rgb main_color = {
                 .green = 0.00,
                 .blue = 0.01,
@@ -87,6 +89,8 @@ int main(){
             };
             sketch.main_color = main_color;
             sketch.background_color = background_color;
+            pwm_set_gpio_level(10, 0);
+            pwm_set_gpio_level(21, 0);
             vector_copy(sketch.figure, sketch_array('d'), matrix);
             draw(sketch, 0, pio, matrix);
             ssd1306_fill(&ssd, !color);

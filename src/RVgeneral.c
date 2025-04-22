@@ -148,7 +148,7 @@ void interrupt_callback(uint gpio, uint32_t events){
         interval = interval_j;
 
     uint32_t current_time = to_us_since_boot(get_absolute_time());
-    if (current_time - interval > 1000000){
+    if (current_time - interval > 250000){
 
         if (context.previous_pin == context.pin)
             context.presses++;
@@ -156,24 +156,23 @@ void interrupt_callback(uint gpio, uint32_t events){
             context.presses = 1;
 
         printf("\ngpio:%d\ntimes:%d\n", gpio, context.presses);
-        
-        if (context.presses % 2 == 0 && gpio != 22){
-            pwm_set_gpio_level(10, 0);
-            pwm_set_gpio_level(21, 0);
-            context.play = true;
-        } else if (gpio == 5){
+
+        if (gpio == 5){
             pwm_set_gpio_level(21, 0);
             pwm_set_gpio_level(10, 0);
-            context.play = true;
+            context.play = !context.play;
+            interval_a = current_time;
         } else if (gpio == 6) {
             pwm_set_gpio_level(10, 0);
             pwm_set_gpio_level(21, 0);
-            context.play = true;
+            context.play = !context.play;
+            interval_b = current_time;
         } else if (gpio = 22){
             pwm_set_gpio_level(10, 0);
             pwm_set_gpio_level(21, 0);
             context.double_border = !context.double_border;
-            context.play = true;
+            context.play = !context.play;
+            interval_j = current_time;
         }
 
         context.previous_pin = context.pin;
